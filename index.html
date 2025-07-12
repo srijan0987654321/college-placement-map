@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>College Placement Geographical Map</title>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    #map { width: 100%; height: 600px; border: 1px solid #e5e7eb; }
+  </style>
+</head>
+<body class="bg-gray-100 font-sans">
+  <div class="container mx-auto p-6">
+    <h1 class="text-3xl font-bold text-center mb-6 text-blue-800">College Placement Geographical Map</h1>
+    <section class="mb-8">
+      <h2 class="text-2xl font-semibold mb-4 text-blue-700">Geographical Distribution of Colleges</h2>
+      <div id="map"></div>
+      <p class="text-gray-700 mt-4">
+        This map shows college locations in India. Markers are sized by Average Package (larger = higher package) and colored by Placement System: <span class="text-green-500">Green</span> for Agency, <span class="text-red-500">Red</span> for Placement Committee. Hover over markers for details.
+      </p>
+    </section>
+  </div>
+  <script>
+    const data = [
+      { College: "IIM Bangalore", System: "Placement Committee", AveragePackage: 34.88, lat: 12.9716, lng: 77.5946, city: "Bangalore, Karnataka", StudentReview: "Should have agency" },
+      { College: "IIM Kozhikode", System: "Agency", AveragePackage: 28.05, lat: 11.2588, lng: 75.7804, city: "Kozhikode, Kerala", StudentReview: "keep agency" },
+      { College: "IIM Vizag", System: "Agency", AveragePackage: 15.61, lat: 17.6868, lng: 83.2185, city: "Visakhapatnam, Andhra Pradesh", StudentReview: "keep agency" },
+      { College: "IIM Bodhgaya", System: "Placement Committee", AveragePackage: 13, lat: 24.6961, lng: 84.9869, city: "Bodh Gaya, Bihar", StudentReview: "Should have agency" },
+      { College: "IIM Indore", System: "Placement Committee", AveragePackage: 25.68, lat: 22.7196, lng: 75.8577, city: "Indore, Madhya Pradesh", StudentReview: "Should have agency" },
+      { College: "XIMB", System: "Agency", AveragePackage: 19.53, lat: 20.2961, lng: 85.8245, city: "Bhubaneswar, Odisha", StudentReview: "keep agency" },
+      { College: "IMI", System: "Placement Committee", AveragePackage: 12.02, lat: 28.6139, lng: 77.2090, city: "New Delhi, Delhi", StudentReview: "Should have agency" }
+    ];
+
+    const map = L.map('map').setView([20.5937, 78.9629], 5);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+    }).addTo(map);
+
+    data.forEach(row => {
+      const markerSize = Math.min(30, Math.max(10, row.AveragePackage * 0.5));
+      const markerColor = row.System === "Agency" ? "#10B981" : "#EF4444";
+      L.circleMarker([row.lat, row.lng], {
+        radius: markerSize,
+        fillColor: markerColor,
+        color: markerColor,
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+      })
+        .addTo(map)
+        .bindPopup(`
+          <b>${row.College}</b><br>
+          City: ${row.city}<br>
+          System: ${row.System}<br>
+          Avg Package: ${row.AveragePackage} LPA<br>
+          Student Review: ${row.StudentReview}
+        `);
+    });
+  </script>
+</body>
+</html>
